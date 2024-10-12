@@ -1,3 +1,4 @@
+import engine.EngineFileTextStore;
 import engine.EngineInMemoryStore;
 import engine.EngineUseCase;
 
@@ -36,7 +37,7 @@ public class Main extends JFrame {
         add(buttonPanel, BorderLayout.CENTER);
     }
 
-    private void showEngineManagerView(Integer labNumber) {
+    private void showEngineManagerView(Integer labNumber) throws Exception {
         EngineUseCase engineUseCase = getEngineUseCase(labNumber);
         JFrame form = new EngineManagerView(labNumber, engineUseCase);
         form.setSize(700, 500);
@@ -46,6 +47,7 @@ public class Main extends JFrame {
     private EngineUseCase getEngineUseCase(Integer labNumber) {
         return switch (labNumber) {
             case 1, 2 -> new EngineUseCase(new EngineInMemoryStore());
+            case 3 -> new EngineUseCase(new EngineFileTextStore("data.txt"));
             default -> new EngineUseCase(new EngineInMemoryStore());
         };
     }
@@ -63,7 +65,11 @@ public class Main extends JFrame {
             String command = e.getActionCommand();
             char lastChar = command.charAt(command.length() - 1);
             int lastDigit = Character.getNumericValue(lastChar);
-            showEngineManagerView(lastDigit);
+            try {
+                showEngineManagerView(lastDigit);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

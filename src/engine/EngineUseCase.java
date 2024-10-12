@@ -11,7 +11,7 @@ public class EngineUseCase {
         this.engineRepository = engineRepository;
     }
 
-    public List<Engine> getEngines() {
+    public List<Engine> getEngines() throws Exception {
         return engineRepository.getAll();
     }
 
@@ -35,7 +35,7 @@ public class EngineUseCase {
     }
 
 
-    public List<Engine> displayMinMaxPowerEngines() {
+    public List<Engine> displayMinMaxPowerEngines() throws Exception {
         List<Engine> engines = engineRepository.getAll();
         Optional<Engine> minEngine = engines.stream().min(Comparator.comparingInt(Engine::getHorsepower));
         Optional<Engine> maxEngine = engines.stream().max(Comparator.comparingInt(Engine::getHorsepower));
@@ -50,10 +50,19 @@ public class EngineUseCase {
         }
     }
 
-    public List<Engine> displayEnginesMatchingPattern(String regex) {
+    public List<Engine> displayEnginesMatchingPattern(String regex) throws Exception {
         Pattern pattern = Pattern.compile(regex);
         return getEngines().stream()
                 .filter(engine -> pattern.matcher(engine.getEngineType()).find())
                 .collect(Collectors.toList());
+    }
+
+    public void save(List<Engine> engines) throws Exception {
+        engines.sort(Comparator.comparingInt(Engine::getHorsepower));
+        engineRepository.save(engines);
+    }
+
+    public List<Engine> displayEnginesFromBinFile() throws Exception {
+        return engineRepository.displayEnginesFromBinFile("sorted_data.bin");
     }
 }

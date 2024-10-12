@@ -1,7 +1,9 @@
 package engine;
 
-public class Engine {
-    private int id;
+import java.io.Serializable;
+
+public class Engine implements Serializable {
+    private final int id;
     private String engineType;
     private int horsepower;
 

@@ -35,4 +35,14 @@ public class EngineInMemoryStore implements EngineRepository {
     public void update(Engine e) {
         engines.set(engines.indexOf(e), e);
     }
+
+    @Override
+    public void save(List<Engine> e) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<Engine> displayEnginesFromBinFile(String filename) throws Exception {
+        return List.of();
+    }
 }
