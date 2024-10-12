@@ -1,3 +1,4 @@
+import engine.EngineDB;
 import engine.EngineFileTextStore;
 import engine.EngineInMemoryStore;
 import engine.EngineUseCase;
@@ -13,7 +14,7 @@ public class Main extends JFrame {
     String[] buttonNames = {"Lab 1", "Lab 2", "Lab 3", "Lab 4"};
 
     public Main() {
-        setTitle("SR_1 Anastasiia Borodai");
+        setTitle("SR_2 Anastasiia Borodai");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -44,10 +45,10 @@ public class Main extends JFrame {
         form.setVisible(true);
     }
 
-    private EngineUseCase getEngineUseCase(Integer labNumber) {
+    private EngineUseCase getEngineUseCase(Integer labNumber) throws Exception {
         return switch (labNumber) {
-            case 1, 2 -> new EngineUseCase(new EngineInMemoryStore());
             case 3 -> new EngineUseCase(new EngineFileTextStore("data.txt"));
+            case 4 -> new EngineUseCase(new EngineDB());
             default -> new EngineUseCase(new EngineInMemoryStore());
         };
     }

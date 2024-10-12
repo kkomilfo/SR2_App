@@ -108,4 +108,9 @@ public class EngineFileTextStore implements EngineRepository {
         }
         return engines;
     }
+
+    @Override
+    public void delete(int id) throws Exception {
+
+    }
 }

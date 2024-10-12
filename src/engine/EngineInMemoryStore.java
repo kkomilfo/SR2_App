@@ -45,4 +45,9 @@ public class EngineInMemoryStore implements EngineRepository {
     public List<Engine> displayEnginesFromBinFile(String filename) throws Exception {
         return List.of();
     }
+
+    @Override
+    public void delete(int id) throws Exception {
+
+    }
 }

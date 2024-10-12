@@ -65,4 +65,8 @@ public class EngineUseCase {
     public List<Engine> displayEnginesFromBinFile() throws Exception {
         return engineRepository.displayEnginesFromBinFile("sorted_data.bin");
     }
+
+    public void delete(int id) throws Exception {
+        engineRepository.delete(id);
+    }
 }

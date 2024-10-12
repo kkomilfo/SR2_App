@@ -22,6 +22,7 @@ public class EngineManagerView extends JFrame {
     private JButton saveToFileButton;
     private JLabel filterPowerLabel;
     private JButton showFromBinaryButton;
+    private JButton deleteSelection;
     private final Integer labNumber;
     private final EngineUseCase engineUseCase;
     private final EngineTableModel enginesTableModel;
@@ -41,6 +42,23 @@ public class EngineManagerView extends JFrame {
         ConfigureFilterTypeTextField();
         ConfigureSaveToFile();
         ConfigureShowFromBinaryButton();
+        ConfigureDeleteButton();
+    }
+
+    private void ConfigureDeleteButton() {
+        deleteSelection.setVisible(labNumber == 4);
+        deleteSelection.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = enginesTableModel.getEngines().get(enginesTable.getSelectedRow()).getId();
+                try {
+                    engineUseCase.delete(id);
+                    enginesTableModel.setEngines(engineUseCase.getEngines());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     private void ConfigureShowFromBinaryButton() {
@@ -115,8 +133,8 @@ public class EngineManagerView extends JFrame {
     }
 
     private void ConfigureFilterTextField() {
-        filterPowerLabel.setVisible(labNumber != 3);
-        filterPowerTextField.setVisible(labNumber != 3);
+        filterPowerLabel.setVisible(labNumber == 1 || labNumber == 2);
+        filterPowerTextField.setVisible(labNumber == 1 || labNumber == 2);
         filterPowerTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -176,8 +194,8 @@ public class EngineManagerView extends JFrame {
     }
 
     private void ConfigureFilterTypeTextField() {
-        filterTypeLabel.setVisible(labNumber == 2);
-        filterTypeTextField.setVisible(labNumber == 2);
+        filterTypeLabel.setVisible(labNumber == 2 || labNumber == 4);
+        filterTypeTextField.setVisible(labNumber == 2 || labNumber == 4);
         filterTypeTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {

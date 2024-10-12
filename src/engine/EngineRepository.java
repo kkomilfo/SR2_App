@@ -8,4 +8,5 @@ public interface EngineRepository {
     void update(Engine e) throws Exception;
     void save(List<Engine> e) throws Exception;
     List<Engine> displayEnginesFromBinFile(String filename) throws Exception;
+    void delete(int id) throws Exception;
 }
