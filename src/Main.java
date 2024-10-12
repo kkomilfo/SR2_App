@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public class Main extends JFrame {
     private JPanel MainPanel;
 
-    String[] buttonNames = {"Lab 8", "Lab 9", "Lab 10", "Lab 11"};
+    String[] buttonNames = {"Lab 1", "Lab 2", "Lab 3", "Lab 4"};
 
     public Main() {
         setTitle("SR_1 Anastasiia Borodai");
@@ -45,14 +45,9 @@ public class Main extends JFrame {
 
     private EngineUseCase getEngineUseCase(Integer labNumber) {
         return switch (labNumber) {
-            case 8 -> new EngineUseCase(new EngineInMemoryStore());
+            case 1, 2 -> new EngineUseCase(new EngineInMemoryStore());
             default -> new EngineUseCase(new EngineInMemoryStore());
         };
-    }
-    private void showForm2(Integer labNumber) {
-        JFrame form = new Vehicle(labNumber);
-        form.setSize(600, 400);
-        form.setVisible(true);
     }
 
     public static void main(String[] args) {
@@ -69,13 +64,6 @@ public class Main extends JFrame {
             char lastChar = command.charAt(command.length() - 1);
             int lastDigit = Character.getNumericValue(lastChar);
             showEngineManagerView(lastDigit);
-//            if (lastDigit >= 1 && lastDigit < 6) {
-//                showForm1(lastDigit);
-//            } else if (lastDigit >= 6 && lastDigit <= 7) {
-//                showForm2(lastDigit);
-//            } else {
-//                JOptionPane.showMessageDialog(Main.this, "Something went wrong with: " + command);
-//            }
         }
     }
 }

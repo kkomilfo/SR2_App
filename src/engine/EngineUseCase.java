@@ -1,7 +1,7 @@
 package engine;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class EngineUseCase {
@@ -22,7 +22,11 @@ public class EngineUseCase {
         engineRepository.add(engine);
     }
 
-    public List<Engine> FilterByHorsePower(String horsePower) throws Exception {
+    public void update(Engine engine) throws Exception {
+        engineRepository.update(engine);
+    }
+
+    public List<Engine> filterByHorsePower(String horsePower) throws Exception {
         int horsePowerNumber = Integer.parseInt(horsePower);
         return engineRepository.getAll()
                 .stream()
@@ -30,7 +34,26 @@ public class EngineUseCase {
                 .toList();
     }
 
-    public void Update(Engine engine) throws Exception {
-        engineRepository.update(engine);
+
+    public List<Engine> displayMinMaxPowerEngines() {
+        List<Engine> engines = engineRepository.getAll();
+        Optional<Engine> minEngine = engines.stream().min(Comparator.comparingInt(Engine::getHorsepower));
+        Optional<Engine> maxEngine = engines.stream().max(Comparator.comparingInt(Engine::getHorsepower));
+
+        if (minEngine.isPresent() && maxEngine.isPresent()) {
+            return new ArrayList<>() {{
+                add(minEngine.get());
+                add(maxEngine.get());
+            }};
+        } else {
+            return List.of();
+        }
+    }
+
+    public List<Engine> displayEnginesMatchingPattern(String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        return getEngines().stream()
+                .filter(engine -> pattern.matcher(engine.getEngineType()).find())
+                .collect(Collectors.toList());
     }
 }

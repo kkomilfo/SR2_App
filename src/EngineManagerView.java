@@ -4,9 +4,8 @@ import engine.EngineUseCase;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.TableRowSorter;
+import java.util.List;
 
 public class EngineManagerView extends JFrame {
     private JTextField powerEngine;
@@ -15,6 +14,9 @@ public class EngineManagerView extends JFrame {
     private JTextField filterPowerTextField;
     private JPanel mainPanel;
     private JTable enginesTable;
+    private JButton minMaxValuesButton;
+    private JTextField filterTypeTextField;
+    private JLabel filterTypeLabel;
     private final Integer labNumber;
     private final EngineUseCase engineUseCase;
     private final EngineTableModel enginesTableModel;
@@ -30,7 +32,8 @@ public class EngineManagerView extends JFrame {
         ConfigureDataTable();
         ConfigureAddNewItemPanel();
         ConfigureFilterTextField();
-
+        ConfigureMinMaxButton();
+        ConfigureFilterTypeTextField();
     }
 
     private void ConfigurePanel() {
@@ -49,7 +52,7 @@ public class EngineManagerView extends JFrame {
             int row = e.getFirstRow();
             Engine updatedEngine = enginesTableModel.getEngines().get(row);
             try {
-                engineUseCase.Update(updatedEngine);
+                engineUseCase.update(updatedEngine);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(EngineManagerView.this, ex.getMessage());
             }
@@ -96,19 +99,66 @@ public class EngineManagerView extends JFrame {
                 timer = new Timer(1000, _ -> {
                     String filterText = filterPowerTextField.getText();
                     if (filterText.trim().isEmpty()) {
-                        sorter.setRowFilter(null);
+                        enginesTableModel.setEngines(engineUseCase.getEngines());
                     } else {
                         try {
-                            int filterValue = Integer.parseInt(filterText);
-                            sorter.setRowFilter(new RowFilter<>() {
-                                @Override
-                                public boolean include(Entry<? extends EngineTableModel, ? extends Integer> entry) {
-                                    return entry.getValue(1) != null && (int) entry.getValue(1) > filterValue;
-                                }
-                            });
-                        } catch (NumberFormatException e) {
+                            enginesTableModel.setEngines(engineUseCase.filterByHorsePower(filterText));
+                        } catch (Exception e) {
                             sorter.setRowFilter(null);
                         }
+                    }
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
+        });
+    }
+
+    private void ConfigureMinMaxButton() {
+        minMaxValuesButton.setVisible(labNumber >= 2);
+        minMaxValuesButton.addActionListener(_ -> {
+            String message = GetEnginesString(engineUseCase.displayMinMaxPowerEngines());
+            JOptionPane.showMessageDialog(EngineManagerView.this, message);
+        });
+    }
+
+    private static String GetEnginesString(List<Engine> engines) {
+        StringBuilder sb = new StringBuilder();
+        for (Engine engine : engines) {
+            sb.append(engine.getInfo()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    private void ConfigureFilterTypeTextField() {
+        filterTypeLabel.setVisible(labNumber >= 2);
+        filterTypeTextField.setVisible(labNumber >= 2);
+        filterTypeTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateFilter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateFilter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateFilter();
+            }
+
+            private void updateFilter() {
+                if (timer != null) {
+                    timer.stop();
+                }
+                timer = new Timer(1000, _ -> {
+                    String filterText = filterTypeTextField.getText();
+                    if (filterText.trim().isEmpty()) {
+                        enginesTableModel.setEngines(engineUseCase.getEngines());
+                    } else {
+                        enginesTableModel.setEngines(engineUseCase.displayEnginesMatchingPattern(filterText));
                     }
                 });
                 timer.setRepeats(false);
