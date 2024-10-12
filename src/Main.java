@@ -1,3 +1,6 @@
+import engine.EngineInMemoryStore;
+import engine.EngineUseCase;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,7 +9,7 @@ import java.awt.event.ActionListener;
 public class Main extends JFrame {
     private JPanel MainPanel;
 
-    String[] buttonNames = {"Lab 1", "Lab 2", "Lab 3", "Lab 4", "Lab 5", "Lab 6", "Lab 7"};
+    String[] buttonNames = {"Lab 8", "Lab 9", "Lab 10", "Lab 11"};
 
     public Main() {
         setTitle("SR_1 Anastasiia Borodai");
@@ -33,12 +36,19 @@ public class Main extends JFrame {
         add(buttonPanel, BorderLayout.CENTER);
     }
 
-    private void showForm1(Integer labNumber) {
-        JFrame form = new CalculateExpression(labNumber);
-        form.setSize(600, 400);
+    private void showEngineManagerView(Integer labNumber) {
+        EngineUseCase engineUseCase = getEngineUseCase(labNumber);
+        JFrame form = new EngineManagerView(labNumber, engineUseCase);
+        form.setSize(700, 500);
         form.setVisible(true);
     }
 
+    private EngineUseCase getEngineUseCase(Integer labNumber) {
+        return switch (labNumber) {
+            case 8 -> new EngineUseCase(new EngineInMemoryStore());
+            default -> new EngineUseCase(new EngineInMemoryStore());
+        };
+    }
     private void showForm2(Integer labNumber) {
         JFrame form = new Vehicle(labNumber);
         form.setSize(600, 400);
@@ -58,13 +68,14 @@ public class Main extends JFrame {
             String command = e.getActionCommand();
             char lastChar = command.charAt(command.length() - 1);
             int lastDigit = Character.getNumericValue(lastChar);
-            if (lastDigit >= 1 && lastDigit < 6) {
-                showForm1(lastDigit);
-            } else if (lastDigit >= 6 && lastDigit <= 7) {
-                showForm2(lastDigit);
-            } else {
-                JOptionPane.showMessageDialog(Main.this, "Something went wrong with: " + command);
-            }
+            showEngineManagerView(lastDigit);
+//            if (lastDigit >= 1 && lastDigit < 6) {
+//                showForm1(lastDigit);
+//            } else if (lastDigit >= 6 && lastDigit <= 7) {
+//                showForm2(lastDigit);
+//            } else {
+//                JOptionPane.showMessageDialog(Main.this, "Something went wrong with: " + command);
+//            }
         }
     }
 }
